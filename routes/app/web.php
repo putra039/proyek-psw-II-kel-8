@@ -2,6 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\BookingController;
+use App\Http\Controllers\Web\RequestController;
+use App\Http\Controllers\Web\UserEditController;
+use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\DataRuanganController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,5 +27,11 @@ Route::group(['domain' => ''], function() {
         Route::post('register',[AuthController::class, 'do_register'])->name('register');
         Route::post('login',[AuthController::class, 'do_login'])->name('login');
     });
+    Route::get('dashboard',[DashboardController::class, 'index'])->name('dahsboard');
     Route::get('logout',[AuthController::class, 'do_logout'])->name('logout');
+    Route::resource('dashboard', DashboardController::class);
+    Route::resource('booking', BookingController::class);
+    Route::resource('book', BookingController::class);
+    Route::resource('dataruangan', DataRuanganController::class);
+    Route::resource('user', UserEditController::class);
 });

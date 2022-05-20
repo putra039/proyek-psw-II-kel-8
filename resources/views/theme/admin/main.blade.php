@@ -1,0 +1,10 @@
+<html>
+    @include('theme.admin.head')
+    @yield('css')
+    <body>
+        @include('theme.admin.aside')
+         {{$slot}}
+      @include('theme.admin.js')
+      @yield('footer')
+    </body>
+</html>
