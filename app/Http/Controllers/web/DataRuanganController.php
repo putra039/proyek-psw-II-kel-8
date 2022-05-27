@@ -9,7 +9,11 @@ use App\Http\Controllers\Controller;
 class DataRuanganController extends Controller
 {
     public function index(){
+        $TotalBooking = Booking::select('Approved', 'Rejected');
         $listrequest = Booking::get();
-        return view('pages.web.dataruangan.main', compact('listrequest'));
+        // $listrequest->command('foo');
+        // $listrequest->hourly();
+        // $listrequest->timezone('Indonesia/Jakarta');
+        return view('pages.web.dataruangan.main', compact('listrequest', 'TotalBooking'));
     }
 }

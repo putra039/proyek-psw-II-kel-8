@@ -1,4 +1,4 @@
-<x-web-layout title="Booking">
+<x-web-layout title="Request">
     <div class="iq-top-navbar">
         <div class="iq-navbar-custom">
             <nav class="navbar navbar-expand-lg navbar-light p-0">
@@ -16,11 +16,11 @@
                     </div>
                 </div>
                 <div class="navbar-breadcrumb">
-                    <h5 class="mb-0">History</h5>
+                    <h5 class="mb-0">Request Class</h5>
                     <nav aria-label="breadcrumb">
                         <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Request Class</li>
+                            <li class="breadcrumb-item"><a href="">Request Class</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">New Request</li>
                         </ul>
                     </nav>
                 </div>
@@ -106,6 +106,17 @@
                                             <span class="text-white font-size-12">{{Auth::user()->nim}} -
                                                 {{Auth::user()->prodi}}</span>
                                         </div>
+                                        <a href="profile.html" class="iq-sub-card iq-bg-primary-hover">
+                                            <div class="media align-items-center">
+                                                <div class="rounded iq-card-icon iq-bg-primary">
+                                                    <i class="ri-file-user-line"></i>
+                                                </div>
+                                                <div class="media-body ml-3">
+                                                    <h6 class="mb-0 ">My Profile</h6>
+                                                    <p class="mb-0 font-size-12">View personal profile details.</p>
+                                                </div>
+                                            </div>
+                                        </a>
                                         <a href="{{route('user.index')}}" class="iq-sub-card iq-bg-primary-hover">
                                             <div class="media align-items-center">
                                                 <div class="rounded iq-card-icon iq-bg-primary">
@@ -114,6 +125,28 @@
                                                 <div class="media-body ml-3">
                                                     <h6 class="mb-0 ">Edit Profile</h6>
                                                     <p class="mb-0 font-size-12">Modify your personal details.</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="account-setting.html" class="iq-sub-card iq-bg-primary-hover">
+                                            <div class="media align-items-center">
+                                                <div class="rounded iq-card-icon iq-bg-primary">
+                                                    <i class="ri-account-box-line"></i>
+                                                </div>
+                                                <div class="media-body ml-3">
+                                                    <h6 class="mb-0 ">Account settings</h6>
+                                                    <p class="mb-0 font-size-12">Manage your account parameters.</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="privacy-setting.html" class="iq-sub-card iq-bg-primary-hover">
+                                            <div class="media align-items-center">
+                                                <div class="rounded iq-card-icon iq-bg-primary">
+                                                    <i class="ri-lock-line"></i>
+                                                </div>
+                                                <div class="media-body ml-3">
+                                                    <h6 class="mb-0 ">Privacy Settings</h6>
+                                                    <p class="mb-0 font-size-12">Control your privacy parameters.</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -130,87 +163,82 @@
             </nav>
         </div>
     </div>
+    <!-- Page Content  -->
     <div id="content-page" class="content-page">
-        <div class="container-fluid">
+        <div class="container-fluid checkout-content">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="iq-card">
-                        <div class="iq-card-header d-flex justify-content-between">
-                            <div class="iq-header-title">
-                                <h4 class="card-title"><i class="bi bi-clock-history"></i> History</h4>
+                    @if ($data->id)
+                    <form action="{{route('booking.update', $data->id)}}" method="post">
+                        @method("PATCH")
+                        @else
+                        <form action="{{route('booking.store')}}" method="POST">
+                            @endif
+                            @csrf
+                            <div class="iq-card">
+                                <div class="iq-card-header d-flex justify-content-between iq-border-bottom mb-0">
+                                    <div class="iq-header-title">
+                                        <h4 class="card-title">Request Class</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-card-body">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <fieldset>
+                                                <input name="date" type="date" class="form-control" id="date"
+                                                    required="" value="{{$data->date}}">
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <fieldset>
+                                                <input name="start" type="time" class="form-control" id="start"
+                                                    required="" value="{{$data->start}}">
+                                            </fieldset>
+                                        </div>
+                                        <p>To</p>
+                                        <div class="col-sm-3">
+                                            <fieldset>
+                                                <input name="end" type="time" class="form-control" id="end" required=""
+                                                    value="{{$data->end}}">
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <label for="exampleFormControlSelect1"></label>
+                                            <select class="form-control" id="exampleFormControlSelect1" name="room_id"
+                                                required>
+                                                <option selected disabled>Pilih Ruangan</option>
+                                                @foreach($rooms as $item)
+                                                <option value="{{$item->id}}"
+                                                    {{$item->id == $room->id ? 'selected':''}}>{{$item->name}}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="invalid-feedback">Example invalid custom select feedback</div>
+                                        </div>
+                                        <div class="col-sm-12" value="{{$data->description}}">
+                                            <fieldset>
+                                                <textarea name="description" rows="5" class="form-control"
+                                                    id="description" placeholder="Notes" required=""></textarea>
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <fieldset>
+                                                <center><button type="submit" class="btn btn-primary">Request</button>
+                                                </center>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="iq-card-header-toolbar d-flex align-items-center">
-                                <a href="{{route('booking.request')}}" class="btn btn-primary">Add New Request Room</a>
-                            </div>
-                        </div>
-                        <div class="iq-card-body">
-                            <div class="table-responsive">
-                                <table class="data-tables table table-striped table-bordered" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Ruangan</th>
-                                            <th>Tanggal</th>
-                                            <th>Jam Mulai</th>
-                                            <th>Jam Selesai</th>
-                                            <th>Description</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($AllBooking as $item)
-                                        <tr>
-                                            <td>{{$loop->iteration}}</td>
-                                            <td>{{\App\Models\Room::where('id', $item->room_id)->first()->name}}</td>
-                                            <td>{{$item->date}}</td>
-                                            <td>{{$item->start}}</td>
-                                            <td>{{$item->end}}</td>
-                                            <td>{{$item->description}}</td>
-                                            @if($item->status == 'Pending')
-                                            <td>
-                                                <div class="badge badge-pill badge-success">{{$item->status}}</div>
-                                            </td>
-                                            @elseif($item->status == 'Approved')
-                                            <td>
-                                                <div class="badge badge-pill badge-success">{{$item->status}}</div>
-                                            </td>
-                                            @elseif($item->status == 'Rejected')
-                                            <td>
-                                                <div class="badge badge-pill badge-danger">{{$item->status}}</div>
-                                            </td>
-                                            @endif
-                                            <td>
-                                                @if($item->status == 'Pending')
-                                                {{-- @if($item) --}}
-                                                <form action="{{route('booking.edit', $item->id)}}" method="PATCH">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-primary btn-sm"
-                                                        data-toggle="tooltip" data-placement="top" title=""
-                                                        data-original-title="Edit"><i
-                                                            class="ri-pencil-line"></i></button>
-                                                </form>
-                                                <form action="{{route('booking.destroy', $item->id)}}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-primary btn-sm"
-                                                        data-toggle="tooltip" data-placement="top" title=""
-                                                        data-original-title="Delete"><i
-                                                            class="ri-delete-bin-line"></i></button>
-                                                </form>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+                </form>
             </div>
         </div>
     </div>
+    </div>
+    </div>
+    </div>
+    <!-- Wrapper END -->
+    <!-- Footer -->
     <footer class="iq-footer">
         <div class="container-fluid">
             <div class="row">
@@ -221,7 +249,7 @@
                     </ul>
                 </div>
                 <div class="col-lg-6 text-right">
-                    Copyright 2022 <a href="#">Buchungsklasse</a> All Rights Reserved.
+                    Copyright 2022 <a href="#">Booksto</a> All Rights Reserved.
                 </div>
             </div>
         </div>

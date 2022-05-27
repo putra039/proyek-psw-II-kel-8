@@ -18,7 +18,7 @@
                           <div class="form-group">
                               <label for="exampleInputPassword1">Password</label>
                               <a href="#" class="float-right text-dark">Forgot password?</a>
-                              <input type="password" name="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+                              <input type="password" name="password" class="form-control mb-0 @error('password') is-invalid @enderror" id="exampleInputPassword1" placeholder="Password">
                           </div>
                           <div class="d-inline-block w-100">
                               <div class="custom-control custom-checkbox d-inline-block mt-2 pt-1">

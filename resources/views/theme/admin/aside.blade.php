@@ -23,8 +23,6 @@
                 <ul id="admin" class="iq-submenu collapse show" data-parent="#iq-sidebar-toggle">
                    <li class="{{request()->is('dashboard') ? 'active' : ''}}"><a href="{{route('admin.dashboard.index')}}"><i class="ri-dashboard-line"></i>Dashboard</a></li>
                    <li><a href="{{route('admin.listrequest.index')}}"><i class="ri-list-check-2"></i>Request Lists</a></li>
-                   <li><a href="admin-author.html"><i class="ri-file-user-line"></i>Author</a></li>
-                   <li><a href="admin-books.html"><i class="ri-book-2-line"></i>Books</a></li>
                 </ul>
              </li>
           </ul>
@@ -74,7 +72,9 @@
                 <li class="nav-item nav-icon">
                    <a href="#" class="search-toggle iq-waves-effect text-gray rounded">
                    <i class="ri-notification-2-line"></i>
+                   @if (\App\Models\Booking::count() !== 0)
                    <span class="bg-primary dots"></span>
+                   @endif
                    </a>
                    <div class="iq-sub-dropdown">
                       <div class="iq-card shadow-none m-0">
@@ -82,20 +82,19 @@
                             <div class="bg-primary p-3">
                                <h5 class="mb-0 text-white">All Notifications<small class="badge  badge-light float-right pt-1">{{ \App\Models\Booking::count()}}</small></h5>
                             </div>
-                            {{-- @foreach($listrequest as $item) --}}
-                            <a href="#" class="iq-sub-card" >
+                            @foreach(\App\Models\Booking::all() as $item)
+                            <a href="{{route('admin.listrequest.index')}}" class="iq-sub-card" >
                                <div class="media align-items-center">
                                   <div class="">
-                                     <img class="avatar-40 rounded" src="{{asset('assets/images/user/01.jpg')}}" alt="">
+                                     <img class="avatar-40 rounded" src="{{asset('assets/images/user.jpg')}}" alt="">
                                   </div>
                                   <div class="media-body ml-3">
-                                     {{-- <h6 class="mb-0 ">{{$item->user->name}}</h6> --}}
-                                     <small class="float-right font-size-12"></small>
-                                     <p class="mb-0">95 MB</p>
+                                     <h6 class="mb-0 ">{{$item->user->name}}</h6>
+                                     <small class="float-right font-size-12">{{$item->created_at}}</small>
                                   </div>
                                </div>
                             </a>
-                            {{-- @endforeach --}}
+                            @endforeach
                          </div>
                       </div>
                    </div>
@@ -114,50 +113,6 @@
                                <h5 class="mb-0 text-white line-height">Hello {{Auth::guard('admin')->user()->name}}</h5>
                                <span class="text-white font-size-12">Available</span>
                             </div>
-                            <a href="profile.html" class="iq-sub-card iq-bg-primary-hover">
-                               <div class="media align-items-center">
-                                  <div class="rounded iq-card-icon iq-bg-primary">
-                                     <i class="ri-file-user-line"></i>
-                                  </div>
-                                  <div class="media-body ml-3">
-                                     <h6 class="mb-0 ">My Profile</h6>
-                                     <p class="mb-0 font-size-12">View personal profile details.</p>
-                                  </div>
-                               </div>
-                            </a>
-                            <a href="profile-edit.html" class="iq-sub-card iq-bg-primary-hover">
-                               <div class="media align-items-center">
-                                  <div class="rounded iq-card-icon iq-bg-primary">
-                                     <i class="ri-profile-line"></i>
-                                  </div>
-                                  <div class="media-body ml-3">
-                                     <h6 class="mb-0 ">Edit Profile</h6>
-                                     <p class="mb-0 font-size-12">Modify your personal details.</p>
-                                  </div>
-                               </div>
-                            </a>
-                            <a href="account-setting.html" class="iq-sub-card iq-bg-primary-hover">
-                               <div class="media align-items-center">
-                                  <div class="rounded iq-card-icon iq-bg-primary">
-                                     <i class="ri-account-box-line"></i>
-                                  </div>
-                                  <div class="media-body ml-3">
-                                     <h6 class="mb-0 ">Account settings</h6>
-                                     <p class="mb-0 font-size-12">Manage your account parameters.</p>
-                                  </div>
-                               </div>
-                            </a>
-                            <a href="privacy-setting.html" class="iq-sub-card iq-bg-primary-hover">
-                               <div class="media align-items-center">
-                                  <div class="rounded iq-card-icon iq-bg-primary">
-                                     <i class="ri-lock-line"></i>
-                                  </div>
-                                  <div class="media-body ml-3">
-                                     <h6 class="mb-0 ">Privacy Settings</h6>
-                                     <p class="mb-0 font-size-12">Control your privacy parameters.</p>
-                                  </div>
-                               </div>
-                            </a>
                             <div class="d-inline-block w-100 text-center p-3">
                                <a class="bg-primary iq-sign-btn" href="{{route('admin.logout')}}" role="button">Sign out<i class="ri-login-box-line ml-2"></i></a>
                             </div>

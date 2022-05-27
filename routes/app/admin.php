@@ -14,9 +14,11 @@ Route::group(['domain' => ''], function() {
         Route::middleware(['auth:admin'])->group(function(){
             Route::get('logout',[AuthController::class, 'do_logout'])->name('logout');
         });
-        Route::resource('dashboard', DashboardController::class);
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
         Route::resource('listrequest', ListRequestController::class);
+        Route::delete('listrequest/{listrequest}/destroy', [ListRequestController::class, 'destroy'])->name('listrequest.destroy');
         Route::post('listrequest/{listrequest}/approved',[ListRequestController::class,'approved'])->name('listrequest.approved');
         Route::post('listrequest/{listrequest}/rejected',[ListRequestController::class,'rejected'])->name('listrequest.rejected');
+        // Route::post('rooms/{rooms}/approved',[ListRequestController::class,'approved'])->name('listrequest.approved');
     });
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\Room;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -18,8 +19,10 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $AllBooking = Booking::where('user_id', Auth::guard('web')->user()->id)->get();
-        return view('pages.web.booking.main', ['AllBooking' => $AllBooking]);
+        $TotalBooking = Booking::select('Approved', 'Rejected');
+        $AllBooking = Booking::where('user_id', Auth::guard('web')->user()->id)->withTrashed()->get();
+        $room = Room::all();
+        return view('pages.web.booking.main', compact('AllBooking', 'room', 'TotalBooking'));
     }
 
     /**
@@ -27,11 +30,18 @@ class BookingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return view('pages.web.booking.book', ['data' => new Booking]);
+    public function create($id)
+    {   
+        $room = Room::find($id);
+        $rooms = Room::where('status', '=', 'ready')->get();
+        return view('pages.web.booking.request', ['data' => new Booking, 'room' => $room, 'rooms' => $rooms]);
     }
 
+    public function request()
+    {   
+        $rooms = Room::where('status', '=', 'ready')->get();
+        return view('pages.web.booking.request', ['data' => new Booking, 'rooms' => $rooms]);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -40,22 +50,24 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $request->validate([
-            'tanggal' => 'required',
-            'jam_mulai' => 'required',
-            'jam_selesai' => 'required',
-            'gd' => 'required',
-            'keterangan' => 'required'
+            'room_id' => 'required',
+            'date' => 'required',
+            'start' => 'required',
+            'end' => 'required',
+            'description' => 'required'
         ]);
+        
         $booking = new Booking;
         $booking-> user_id = auth()->user()->id;
-        $booking-> tanggal = $request->tanggal;
-        $booking-> jam_mulai = $request->jam_mulai;
-        $booking-> jam_selesai = $request->jam_selesai;
-        $booking-> gd = $request->gd;
-        $booking-> keterangan = $request->keterangan;
-
+        $booking-> room_id = $request->room_id;
+        $booking-> date = $request->date;
+        $booking-> start = $request->start;
+        $booking-> end = $request->end;
+        $booking-> description = $request->description;
         $booking->save();
+        // dd($booking);
         return redirect()->back();
     }
 
@@ -78,7 +90,9 @@ class BookingController extends Controller
      */
     public function edit(Booking $booking)
     {
-        return view('pages.web.booking.book', ['data'=>$booking]);
+        $room = Room::find($booking->room_id);
+        $rooms = Room::where('status', '=', 'ready')->get();
+        return view('pages.web.booking.book', ['data'=>$booking, 'room' => $room, 'rooms' => $rooms]);
     }
 
     /**
@@ -91,19 +105,19 @@ class BookingController extends Controller
     public function update(Request $request, $booking)
     {
         $request->validate([
-            'tanggal'=>'required',
-            'jam_mulai'=>'required',
-            'jam_selesai'=>'required',
-            'gd'=>'required',
-            'keterangan'=>'required'
+            'date'=>'required',
+            'start'=>'required',
+            'end'=>'required',
+            'room_id'=>'required',
+            'description'=>'required'
         ]);
         Booking::where('id',$booking)
         ->update([
-            'tanggal'=>$request->tanggal,
-            'jam_mulai'=>$request->jam_mulai,
-            'jam_selesai'=>$request->jam_selesai,
-            'gd'=>$request->gd,
-            'keterangan'=>$request->keterangan,
+            'date'=>$request->date,
+            'start'=>$request->start,
+            'end'=>$request->end,
+            'room_id'=>$request->room_id,
+            'description'=>$request->description,
         ]);
 
         return redirect("booking")->with('status','Request berhasil di ubah');
@@ -115,9 +129,20 @@ class BookingController extends Controller
      * @param  \App\Models\Booking  $booking
      * @return \Illuminate\Http\Response
      */
-    public function destroy($booking)
+    public function destroy($id)
     {
-        Booking::where('id',$booking)->delete();
+        // $room = Room::all();
+        $books = Booking::find($id);
+        $room = Room::where('status', '=', 'Ordered')
+        ->orWhere('status', '=', 'Rejected')
+        ->first();
+        // dd($room);
+        // $books = Booking::where('id',$booking);
+        // dd($books);
+        $room->status='Ready';
+        $room->update();
+        
+        $books->delete();
         return redirect("booking")->with('status','Request berhasil di hapus');
     }
 }

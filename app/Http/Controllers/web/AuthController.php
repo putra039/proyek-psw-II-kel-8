@@ -42,6 +42,7 @@ class AuthController extends Controller
         } else {
             $user = new User;
             $request['role'] = 'user';
+            // $user->gambar = $request->gambar;
             $user->name = Str::title($request->name);
             $user->nim = $request->nim;
             $user->prodi = $request->prodi;

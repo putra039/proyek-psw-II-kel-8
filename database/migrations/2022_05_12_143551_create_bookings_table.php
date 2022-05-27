@@ -16,14 +16,16 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->date('tanggal');
-            $table->time('jam_mulai');
-            $table->time('jam_selesai');
-            $table->string('gd');
-            $table->string('keterangan');
-            $table->enum('status', ['Pending', 'Approved', 'Rejected']);
+            $table->foreignId('room_id');
+            $table->date('date');
+            $table->time('start');
+            $table->time('end');
+            $table->string('description');
+            $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('room_id')->references('id')->on('rooms');
         });
     }
 

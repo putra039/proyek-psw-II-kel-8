@@ -16,3 +16,5 @@
 <script src="{{asset('assets/js/style-customizer.js')}}"></script>
 <script src="{{asset('assets/js/chart-custom.js')}}"></script>
 <script src="{{asset('assets/js/custom.js')}}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>

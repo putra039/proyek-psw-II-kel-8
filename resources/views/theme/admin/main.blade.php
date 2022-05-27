@@ -6,5 +6,6 @@
          {{$slot}}
       @include('theme.admin.js')
       @yield('footer')
+      @yield('custom_js')
     </body>
 </html>
